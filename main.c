@@ -1,32 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/12/20 12:59:14 by rle-mino          #+#    #+#             */
-/*   Updated: 2015/12/24 11:03:14 by rle-mino         ###   ########.fr       */
+/*   Created: 2015/12/20 17:13:48 by rle-mino          #+#    #+#             */
+/*   Updated: 2015/12/22 15:40:34 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# ifndef GET_NEXT_LINE_H
-#define GET_NEXT_LINE_H
-
-#include <unistd.h>
-#include "libft/includes/libft.h"
-#include <stdlib.h>
+#include "get_next_line.h"
+#include <fcntl.h>
 #include <stdio.h>
-#define DEBUG printf("%d - %s - %s\n", __LINE__, __func__, __FILE__);
-#define BUFF_SIZE 32
 
-int		get_next_line(int const fd, char **line);
-
-typedef struct		s_struct
+int		main(int argc, char **argv)
 {
-	char			*buf1;
-	char			*buf2;
-	int				mfd;
-}					t_struct;
+	char	*line;
+	int		fd;
 
-#endif
+	if (argc != 2)
+		return (0);
+	fd = open(argv[1], O_RDONLY);
+	get_next_line(fd, &line);
+	free(line);
+	close(fd);
+}
