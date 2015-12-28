@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/23 17:51:19 by rle-mino          #+#    #+#             */
-/*   Updated: 2015/12/20 17:13:26 by rle-mino         ###   ########.fr       */
+/*   Updated: 2015/12/19 19:17:14 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,13 @@
 
 char	*ft_strncat(char *s1, const char *s2, size_t n)
 {
-	size_t	i;
-	size_t	j;
+	char	*ret;
 
-	i = 0;
-	j = 0;
-	while (s1[i] != '\0' && s1[i])
-		i++;
-	while (j < n)
-	{
-		s1[i] = s2[j];
-		i++;
-		j++;
-	}
-	s1[i] = '\0';
-	return (s1);
+	ret = s1;
+	while (*s1)
+		s1++;
+	while (n-- && *s2)
+		*s1++ = *s2++;
+	*s1 = '\0';
+	return (ret);
 }

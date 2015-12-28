@@ -6,7 +6,7 @@
 #    By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/26 09:50:20 by rle-mino          #+#    #+#              #
-#    Updated: 2015/12/15 11:08:39 by rle-mino         ###   ########.fr        #
+#    Updated: 2015/12/21 13:47:10 by rle-mino         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -83,7 +83,7 @@ NAME=		libft.a
 all: $(NAME)
 
 $(NAME):
-	gcc -c $(SOURCE) -Wall -Wextra -Werror
+	gcc -c $(SOURCE) -Wall -Wextra -Werror -I includes/
 	ar rc $(NAME) $(DOTO)
 	ranlib $(NAME)
 

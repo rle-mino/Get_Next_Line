@@ -6,59 +6,75 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 13:06:35 by rle-mino          #+#    #+#             */
-/*   Updated: 2015/12/24 16:50:53 by rle-mino         ###   ########.fr       */
+/*   Updated: 2015/12/28 12:55:56 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-static char		*left(char *buf, char *sla)
+static char			*left(char *buf1, char **buf2)
 {
-	char	*left;
-	int		i;
+	size_t			i;
 
-	i = ft_strlen(buf) - ft_strlen(sla);
-	left = ft_strsub(buf, 0, i);
-	return (left);
-}
-
-void					pupute(int *rd, t_struct *ko, char **line)
-{
-	ko->buf1[BUFF_SIZE] = '\0';
-	if ((ko->buf2 = ft_strchr(ko->buf1, '\n')) != NULL)
+	*buf2 = ft_strdup(*buf2);
+	i = 0;
+	while (buf1[i] != '\n')
+		i++;
+	while (buf1[i])
 	{
-		*line = ft_strjoin(*line, left(ko->buf1, ko->buf2));
-		*rd = 0;
-		ko->buf2++;
+		buf1[i] = '\0';
+		i++;
 	}
-	else
-		*line = ft_strjoin(*line, ko->buf1);
+	return (buf1);
 }
 
-int						get_next_line(int fd, char **line)
+char			*mouvep(char **str)
+{
+	char		*tmp;
+	int			i;
+
+	i = 0;
+	tmp = *str;
+	while (*str[i] != '\n' && *str[i])
+		i++;
+	i++;
+	*str = *str + i;
+	return (tmp);
+}
+
+int				get_next_line(int const fd, char **line)
 {
 	static t_struct		*ko = NULL;
 	int					rd;
 
-	if (!(ko))
-		ko = (t_struct *)ft_memalloc(sizeof(t_struct));
-	ko->buf1 = (char *)ft_memalloc(BUFF_SIZE + 1);
+	if (!ko)
+	{
+		ko = (t_struct *)malloc(sizeof(t_struct));
+		ko->buf1 = (char *)malloc(sizeof(char) * (BUFF_SIZE + 1));
+	}
+	*line = (char *)malloc(1);
 	if (ko->buf2)
 	{
-		ko->buf1 = ft_strcpy(ko->buf1, ko->buf2);
-		ko->k = ft_strlen(ko->buf2);
+		if (ft_strchr(ko->buf2, '\n') != NULL)
+		{
+			*line = ft_strjoin(*line, mouvep(&ko->buf2));
+		}
+		else
+			*line = ft_strjoin(*line, ko->buf2);
 	}
-	else
-		ko->k = 0;
 	rd = 1;
-	*line = (char *)ft_memalloc(BUFF_SIZE + 1);
 	while (rd > 0)
 	{
-		rd = read(fd, ko->buf1 + ko->k , (BUFF_SIZE - ko->k));
-		if (rd == 0)
-			return (0);
-		pupute(&rd, ko, line);
+		rd = read(fd, ko->buf1, BUFF_SIZE);
+		ko->buf1[BUFF_SIZE] = '\0';
+		if ((ko->buf2 = ft_strchr(ko->buf1, '\n')) != NULL)
+		{
+			rd = 0;
+			*line = ft_strjoin(*line, left(ko->buf1, &ko->buf2));
+			return (1);
+		}
+		*line = ft_strjoin(*line, ko->buf1);
 	}
-	return (1);
+	return (0);
 }
