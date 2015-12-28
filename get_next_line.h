@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 12:59:14 by rle-mino          #+#    #+#             */
-/*   Updated: 2015/12/27 14:41:04 by rle-mino         ###   ########.fr       */
+/*   Updated: 2015/12/28 17:05:44 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ typedef struct		s_struct
 {
 	char			*buf1;
 	char			*buf2;
-	char			*tmp;
+	int				k;
 }					t_struct;
 
 #endif
