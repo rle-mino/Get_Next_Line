@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 13:06:35 by rle-mino          #+#    #+#             */
-/*   Updated: 2015/12/28 18:14:40 by rle-mino         ###   ########.fr       */
+/*   Updated: 2015/12/29 18:53:37 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static char			*left(char *buf1, char **buf2)
 {
 	size_t			i;
 
-	*buf2 = ft_strdup(*buf2);
+	*buf2 = ft_strdup(*buf2 + 1);
 	i = 0;
 	while (buf1[i] != '\n')
 		i++;
@@ -34,14 +34,14 @@ static char			*bsn(char **buf2)
 	int		i;
 	char	*tmp;
 
-	i = 1;
+	i = 0;
 	tmp = ft_strdup(*buf2);
 	while (tmp[i] != '\n' && tmp[i])
-	{
 		i++;
-	}
-	tmp[i] = '\0';
 	*buf2 += i;
+	if (tmp[i] == '\n')
+		return (tmp);
+	tmp[i] = '\0';
 	return (tmp);
 }
 
@@ -49,9 +49,7 @@ int					get_next_line(int const fd, char **line)
 {
 	static t_struct		*ko = NULL;
 	int					rd;
-	int					i;
 
-	i = 0;
 	if (!ko)
 	{
 		ko = (t_struct *)malloc(sizeof(t_struct));
