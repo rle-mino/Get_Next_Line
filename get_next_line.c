@@ -6,14 +6,14 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 13:06:35 by rle-mino          #+#    #+#             */
-/*   Updated: 2015/12/29 18:53:37 by rle-mino         ###   ########.fr       */
+/*   Updated: 2015/12/30 20:20:51 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-static char			*left(char *buf1, char **buf2)
+/*static char			*left(char *buf1, char **buf2)
 {
 	size_t			i;
 
@@ -29,23 +29,48 @@ static char			*left(char *buf1, char **buf2)
 	return (buf1);
 }
 
-static char			*bsn(char **buf2)
+char			*right(char *buf2)
 {
+	char	*line;
 	int		i;
-	char	*tmp;
 
 	i = 0;
-	tmp = ft_strdup(*buf2);
-	while (tmp[i] != '\n' && tmp[i])
+	while (buf2[i] != '\n')
 		i++;
-	*buf2 += i;
-	if (tmp[i] == '\n')
-		return (tmp);
-	tmp[i] = '\0';
-	return (tmp);
+	line = (char *)malloc(i + 1);
+	i = 0;
+	while (buf2[i] != '\n')
+	{
+		line[i] = buf2[i];
+		i++;
+	}
+	line[i] = '\0';
+	return (line);
+}*/
+
+char			*top(char *buf)
+{
+	int		i;
+
+	i = 0;
+	while (buf[i] == '\0')
+		return (buf);
+	if (buf[i] == '\n')
+		buf = buf + 1;
+	while (buf[i] != '\n')
+		i++;
+	buf = buf + i;
+	printf("%s\n", buf);
+	return (buf);
 }
 
-int					get_next_line(int const fd, char **line)
+int		main(void)
+{
+	char	*str = "";
+	top(str);
+}
+
+/*int					get_next_line(int const fd, char **line)
 {
 	static t_struct		*ko = NULL;
 	int					rd;
@@ -54,14 +79,21 @@ int					get_next_line(int const fd, char **line)
 	{
 		ko = (t_struct *)malloc(sizeof(t_struct));
 		ko->buf1 = (char *)malloc(sizeof(char) * (BUFF_SIZE + 1));
+		ko->buf2 = NULL;
 	}
 	*line = (char *)malloc(1);
-	if (ko->k == 1 && ko->buf2)
+	if (ko->k && ko->buf2)
 	{
 		if (ft_strchr(ko->buf2, '\n') != NULL)
-			*line = bsn(&ko->buf2);
+		{
+			DEBUG
+			*line = right(ko->buf2);
+			DEBUG
+			ko->buf2 = top(ko->buf2);
+			return (1);
+		}
 		else
-			*line = ft_strjoin(*line ,ko->buf2);
+			*line = ft_strjoin(*line, ko->buf2);
 	}
 	rd = 1;
 	while (rd > 0)
@@ -78,4 +110,4 @@ int					get_next_line(int const fd, char **line)
 		*line = ft_strjoin(*line, ko->buf1);
 	}
 	return (0);
-}
+}*/
