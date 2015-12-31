@@ -6,14 +6,14 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 13:06:35 by rle-mino          #+#    #+#             */
-/*   Updated: 2015/12/30 20:20:51 by rle-mino         ###   ########.fr       */
+/*   Updated: 2015/12/31 14:44:26 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-/*static char			*left(char *buf1, char **buf2)
+static char			*left(char *buf1, char **buf2)
 {
 	size_t			i;
 
@@ -46,31 +46,25 @@ char			*right(char *buf2)
 	}
 	line[i] = '\0';
 	return (line);
-}*/
+}
 
 char			*top(char *buf)
 {
 	int		i;
 
 	i = 0;
-	while (buf[i] == '\0')
-		return (buf);
 	if (buf[i] == '\n')
+	{
 		buf = buf + 1;
+		return (buf);
+	}
 	while (buf[i] != '\n')
 		i++;
-	buf = buf + i;
-	printf("%s\n", buf);
+	buf = buf + i + 1;
 	return (buf);
 }
 
-int		main(void)
-{
-	char	*str = "";
-	top(str);
-}
-
-/*int					get_next_line(int const fd, char **line)
+int					get_next_line(int const fd, char **line)
 {
 	static t_struct		*ko = NULL;
 	int					rd;
@@ -81,15 +75,15 @@ int		main(void)
 		ko->buf1 = (char *)malloc(sizeof(char) * (BUFF_SIZE + 1));
 		ko->buf2 = NULL;
 	}
-	*line = (char *)malloc(1);
+	*line = (char *)ft_memalloc(1);
 	if (ko->k && ko->buf2)
 	{
 		if (ft_strchr(ko->buf2, '\n') != NULL)
 		{
-			DEBUG
+			//printf("before %s\n", *line);
 			*line = right(ko->buf2);
-			DEBUG
 			ko->buf2 = top(ko->buf2);
+			//printf("after %s\n", *line);
 			return (1);
 		}
 		else
@@ -110,4 +104,4 @@ int		main(void)
 		*line = ft_strjoin(*line, ko->buf1);
 	}
 	return (0);
-}*/
+}
