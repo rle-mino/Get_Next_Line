@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 13:06:35 by rle-mino          #+#    #+#             */
-/*   Updated: 2015/12/31 14:44:26 by rle-mino         ###   ########.fr       */
+/*   Updated: 2015/12/31 18:27:36 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static char			*left(char *buf1, char **buf2)
 	return (buf1);
 }
 
-char			*right(char *buf2)
+static char			*right(char *buf2)
 {
 	char	*line;
 	int		i;
@@ -48,7 +48,7 @@ char			*right(char *buf2)
 	return (line);
 }
 
-char			*top(char *buf)
+static char			*top(char *buf)
 {
 	int		i;
 
@@ -64,31 +64,40 @@ char			*top(char *buf)
 	return (buf);
 }
 
+static int			bot(t_struct **ko, char **line, int k)
+{
+	if (k == 2)
+	{
+		if (ft_strchr((*ko)->buf2, '\n') != NULL)
+		{
+			*line = right((*ko)->buf2);
+			(*ko)->buf2 = top((*ko)->buf2);
+			return (1);
+		}
+		else
+			*line = ft_strjoin(*line, (*ko)->buf2);
+		return (2);
+	}
+	if (!(*ko = malloc(sizeof(t_struct))))
+		return (0);
+	if (!((*ko)->buf1 = (char *)malloc(sizeof(char) * (BUFF_SIZE + 1))))
+		return (0);
+	(*ko)->buf2 = NULL;
+		return (0);
+}
+
+
 int					get_next_line(int const fd, char **line)
 {
 	static t_struct		*ko = NULL;
 	int					rd;
 
 	if (!ko)
-	{
-		ko = (t_struct *)malloc(sizeof(t_struct));
-		ko->buf1 = (char *)malloc(sizeof(char) * (BUFF_SIZE + 1));
-		ko->buf2 = NULL;
-	}
+		bot(&ko, line, 3);
 	*line = (char *)ft_memalloc(1);
 	if (ko->k && ko->buf2)
-	{
-		if (ft_strchr(ko->buf2, '\n') != NULL)
-		{
-			//printf("before %s\n", *line);
-			*line = right(ko->buf2);
-			ko->buf2 = top(ko->buf2);
-			//printf("after %s\n", *line);
+		if (bot(&ko, line, 2) == 1)
 			return (1);
-		}
-		else
-			*line = ft_strjoin(*line, ko->buf2);
-	}
 	rd = 1;
 	while (rd > 0)
 	{
