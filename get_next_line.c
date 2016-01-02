@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 13:06:35 by rle-mino          #+#    #+#             */
-/*   Updated: 2015/12/31 18:27:36 by rle-mino         ###   ########.fr       */
+/*   Updated: 2016/01/02 17:45:47 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,80 +37,96 @@ static char			*right(char *buf2)
 	i = 0;
 	while (buf2[i] != '\n')
 		i++;
-	line = (char *)malloc(i + 1);
-	i = 0;
-	while (buf2[i] != '\n')
-	{
+	line = (char *)ft_memalloc(i + 1);
+	i = -1;
+	while (buf2[++i] != '\n')
 		line[i] = buf2[i];
-		i++;
-	}
 	line[i] = '\0';
 	return (line);
 }
 
-static char			*top(char *buf)
+static char			*top(char *buf, t_struct **gnl)
 {
 	int		i;
 
 	i = 0;
+	(*gnl)->bin = buf;
 	if (buf[i] == '\n')
 	{
-		buf = buf + 1;
+		buf = ft_strdup(buf + 1);
+		free((*gnl)->bin);
 		return (buf);
 	}
 	while (buf[i] != '\n')
 		i++;
-	buf = buf + i + 1;
+	(*gnl)->bin = buf;
+	buf = ft_strdup(buf + i + 1);
+	free((*gnl)->bin);
 	return (buf);
 }
 
-static int			bot(t_struct **ko, char **line, int k)
+static int			bot(t_struct **gnl, char **line, int k)
 {
 	if (k == 2)
 	{
-		if (ft_strchr((*ko)->buf2, '\n') != NULL)
+		(*gnl)->bin = *line;
+		if (ft_strchr((*gnl)->buf2, '\n') != NULL)
 		{
-			*line = right((*ko)->buf2);
-			(*ko)->buf2 = top((*ko)->buf2);
+			*line = right((*gnl)->buf2);
+			free((*gnl)->bin);
+			(*gnl)->buf2 = top((*gnl)->buf2, gnl);
 			return (1);
 		}
 		else
-			*line = ft_strjoin(*line, (*ko)->buf2);
+		{
+			*line = ft_strjoin(*line, (*gnl)->buf2);
+			free((*gnl)->bin);
+		}
 		return (2);
 	}
-	if (!(*ko = malloc(sizeof(t_struct))))
+	if (!(*gnl = ft_memalloc(sizeof(t_struct))))
 		return (0);
-	if (!((*ko)->buf1 = (char *)malloc(sizeof(char) * (BUFF_SIZE + 1))))
+	if (!((*gnl)->buf1 = (char *)ft_memalloc(sizeof(char) * (BUFF_SIZE + 1))))
 		return (0);
-	(*ko)->buf2 = NULL;
-		return (0);
+	(*gnl)->buf2 = NULL;
+	return (0);
 }
-
 
 int					get_next_line(int const fd, char **line)
 {
-	static t_struct		*ko = NULL;
+	static t_struct		*gnl = NULL;
 	int					rd;
 
-	if (!ko)
-		bot(&ko, line, 3);
+	if (!gnl)
+		bot(&gnl, line, 3);
 	*line = (char *)ft_memalloc(1);
-	if (ko->k && ko->buf2)
-		if (bot(&ko, line, 2) == 1)
+	if (gnl->k && gnl->buf2)
+		if (bot(&gnl, line, 2) == 1)
 			return (1);
 	rd = 1;
 	while (rd > 0)
 	{
-		rd = read(fd, ko->buf1, BUFF_SIZE);
-		ko->buf1[BUFF_SIZE] = '\0';
-		if ((ko->buf2 = ft_strchr(ko->buf1, '\n')) != NULL)
+		if ((rd = read(fd, gnl->buf1, BUFF_SIZE)) < 1)
+		{
+			free(gnl->buf1);
+			if (rd == 0)
+				return (0);
+			else
+				return (-1);
+		}
+		gnl->buf1[BUFF_SIZE + 1] = '\0';
+		if ((gnl->buf2 = ft_strchr(gnl->buf1, '\n')) != NULL)
 		{
 			rd = 0;
-			*line = ft_strjoin(*line, left(ko->buf1, &ko->buf2));
-			ko->k = 1;
+			gnl->bin = *line;
+			*line = ft_strjoin(*line, left(gnl->buf1, &gnl->buf2));
+			free(gnl->bin);
+			gnl->k = 1;
 			return (1);
 		}
-		*line = ft_strjoin(*line, ko->buf1);
+		gnl->bin = *line;
+		*line = ft_strjoin(*line, gnl->buf1);
+		free(gnl->bin);
 	}
-	return (0);
+	return (1);
 }
