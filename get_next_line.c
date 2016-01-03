@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 13:06:35 by rle-mino          #+#    #+#             */
-/*   Updated: 2016/01/03 11:53:47 by rle-mino         ###   ########.fr       */
+/*   Updated: 2016/01/03 14:50:40 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ static int			bot(t_struct **gnl, char **line, int k)
 	if (!((*gnl)->buf1 = (char *)ft_memalloc(sizeof(char) * (BUFF_SIZE + 1))))
 		return (0);
 	(*gnl)->buf2 = NULL;
-	(*gnl)->ret = 0;
 	return (0);
 }
 
@@ -121,13 +120,13 @@ int					get_next_line(int const fd, char **line)
 		}
 		gnl->bin = *line;
 		*line = ft_strjoin(*line, gnl->buf1);
+		ft_bzero(gnl->buf1, ft_strlen(gnl->buf1));
 		free(gnl->bin);
-		ft_putendl(*line);
-		if (ft_strlen(*line) > 0 && rd < BUFF_SIZE)
-		{
-			free(gnl->buf1);
-			return (1);
-		}
+	}
+	if (ft_strlen(*line) > 0 && rd < BUFF_SIZE)
+	{
+		free(gnl->buf1);
+		return (1);
 	}
 	return (0);
 }

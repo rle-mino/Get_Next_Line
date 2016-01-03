@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 12:59:14 by rle-mino          #+#    #+#             */
-/*   Updated: 2016/01/03 10:24:16 by rle-mino         ###   ########.fr       */
+/*   Updated: 2016/01/03 14:12:15 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <stdio.h>
 
 # define DEBUG printf("%d - %s - %s\n", __LINE__, __func__, __FILE__);
-# define BUFF_SIZE 42
+# define BUFF_SIZE 1
 
 int					get_next_line(int const fd, char **line);
 
@@ -29,7 +29,6 @@ typedef struct		s_struct
 	char			*buf2;
 	char			*bin;
 	int				k;
-	int				ret;
 }					t_struct;
 
 #endif
