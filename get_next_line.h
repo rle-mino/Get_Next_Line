@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 12:59:14 by rle-mino          #+#    #+#             */
-/*   Updated: 2016/01/02 13:27:40 by rle-mino         ###   ########.fr       */
+/*   Updated: 2016/01/03 10:24:16 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct		s_struct
 	char			*buf2;
 	char			*bin;
 	int				k;
+	int				ret;
 }					t_struct;
 
 #endif

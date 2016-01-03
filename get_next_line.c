@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 13:06:35 by rle-mino          #+#    #+#             */
-/*   Updated: 2016/01/02 17:45:47 by rle-mino         ###   ########.fr       */
+/*   Updated: 2016/01/03 11:53:47 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ static int			bot(t_struct **gnl, char **line, int k)
 	if (!((*gnl)->buf1 = (char *)ft_memalloc(sizeof(char) * (BUFF_SIZE + 1))))
 		return (0);
 	(*gnl)->buf2 = NULL;
+	(*gnl)->ret = 0;
 	return (0);
 }
 
@@ -104,17 +105,11 @@ int					get_next_line(int const fd, char **line)
 		if (bot(&gnl, line, 2) == 1)
 			return (1);
 	rd = 1;
-	while (rd > 0)
+	while ((rd = read(fd, gnl->buf1, BUFF_SIZE)))
 	{
-		if ((rd = read(fd, gnl->buf1, BUFF_SIZE)) < 1)
-		{
-			free(gnl->buf1);
-			if (rd == 0)
-				return (0);
-			else
-				return (-1);
-		}
-		gnl->buf1[BUFF_SIZE + 1] = '\0';
+		if (rd == -1)
+			return (-1);
+		gnl->buf1[ft_strlen(gnl->buf1)] = '\0';
 		if ((gnl->buf2 = ft_strchr(gnl->buf1, '\n')) != NULL)
 		{
 			rd = 0;
@@ -127,6 +122,12 @@ int					get_next_line(int const fd, char **line)
 		gnl->bin = *line;
 		*line = ft_strjoin(*line, gnl->buf1);
 		free(gnl->bin);
+		ft_putendl(*line);
+		if (ft_strlen(*line) > 0 && rd < BUFF_SIZE)
+		{
+			free(gnl->buf1);
+			return (1);
+		}
 	}
-	return (1);
+	return (0);
 }
