@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 13:06:35 by rle-mino          #+#    #+#             */
-/*   Updated: 2016/01/03 14:50:40 by rle-mino         ###   ########.fr       */
+/*   Updated: 2016/01/03 20:04:31 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,10 +101,10 @@ int					get_next_line(int const fd, char **line)
 		bot(&gnl, line, 3);
 	*line = (char *)ft_memalloc(1);
 	if (gnl->k && gnl->buf2)
-		if (bot(&gnl, line, 2) == 1)
+		if ((rd = bot(&gnl, line, 2)) == 1)
 			return (1);
 	rd = 1;
-	while ((rd = read(fd, gnl->buf1, BUFF_SIZE)))
+	while ((rd = read(fd, gnl->buf1, BUFF_SIZE) > 0))
 	{
 		if (rd == -1)
 			return (-1);
@@ -123,10 +123,9 @@ int					get_next_line(int const fd, char **line)
 		ft_bzero(gnl->buf1, ft_strlen(gnl->buf1));
 		free(gnl->bin);
 	}
+	if (rd == 0)
+		return (0);
 	if (ft_strlen(*line) > 0 && rd < BUFF_SIZE)
-	{
-		free(gnl->buf1);
 		return (1);
-	}
 	return (0);
 }

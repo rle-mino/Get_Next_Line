@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 17:13:48 by rle-mino          #+#    #+#             */
-/*   Updated: 2016/01/03 14:57:37 by rle-mino         ###   ########.fr       */
+/*   Updated: 2016/01/03 19:35:06 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,15 @@ int		main(int argc, char **argv)
 {
 	char	*line;
 	int		fd;
+	int		i;
 
+	i = 0;
 	if (argc != 2)
 		return (0);
 	fd = open(argv[1], O_RDONLY);
 	while (get_next_line(fd, &line) > 0)
 	{
-		ft_putstr(line);
+		printf("%d\t%s\n", ++i ,line);
 		free(line);
 	}
 	close(fd);
