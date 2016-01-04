@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 13:06:35 by rle-mino          #+#    #+#             */
-/*   Updated: 2016/01/03 20:04:31 by rle-mino         ###   ########.fr       */
+/*   Updated: 2016/01/04 13:07:21 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,13 +97,14 @@ int					get_next_line(int const fd, char **line)
 	static t_struct		*gnl = NULL;
 	int					rd;
 
+	if (fd < 0 || line == NULL)
+		return (-1);
 	if (!gnl)
 		bot(&gnl, line, 3);
 	*line = (char *)ft_memalloc(1);
 	if (gnl->k && gnl->buf2)
 		if ((rd = bot(&gnl, line, 2)) == 1)
 			return (1);
-	rd = 1;
 	while ((rd = read(fd, gnl->buf1, BUFF_SIZE) > 0))
 	{
 		if (rd == -1)
@@ -111,7 +112,6 @@ int					get_next_line(int const fd, char **line)
 		gnl->buf1[ft_strlen(gnl->buf1)] = '\0';
 		if ((gnl->buf2 = ft_strchr(gnl->buf1, '\n')) != NULL)
 		{
-			rd = 0;
 			gnl->bin = *line;
 			*line = ft_strjoin(*line, left(gnl->buf1, &gnl->buf2));
 			free(gnl->bin);
