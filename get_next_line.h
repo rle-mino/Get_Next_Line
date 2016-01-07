@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 12:59:14 by rle-mino          #+#    #+#             */
-/*   Updated: 2016/01/03 19:53:55 by rle-mino         ###   ########.fr       */
+/*   Updated: 2016/01/07 20:17:22 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,8 @@
 # include <unistd.h>
 # include "libft/includes/libft.h"
 # include <stdlib.h>
-# include <stdio.h>
 
-# define DEBUG printf("%d - %s - %s\n", __LINE__, __func__, __FILE__);
-# define BUFF_SIZE 42
+# define BUFF_SIZE 100
 
 int					get_next_line(int const fd, char **line);
 

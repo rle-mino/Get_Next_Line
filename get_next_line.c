@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 13:06:35 by rle-mino          #+#    #+#             */
-/*   Updated: 2016/01/04 13:07:21 by rle-mino         ###   ########.fr       */
+/*   Updated: 2016/01/07 20:16:43 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,40 +29,56 @@ static char			*left(char *buf1, char **buf2)
 	return (buf1);
 }
 
-static char			*right(char *buf2)
+static char			*right(char *buf2, t_struct **gnl, char **line2, int k)
 {
 	char	*line;
 	int		i;
 
-	i = 0;
-	while (buf2[i] != '\n')
-		i++;
-	line = (char *)ft_memalloc(i + 1);
-	i = -1;
-	while (buf2[++i] != '\n')
-		line[i] = buf2[i];
-	line[i] = '\0';
-	return (line);
+	if (k == 1)
+	{
+		i = 0;
+		while (buf2[i] != '\n')
+			i++;
+		line = (char *)ft_memalloc(i + 1);
+		i = -1;
+		while (buf2[++i] != '\n')
+			line[i] = buf2[i];
+		line[i] = '\0';
+		return (line);
+	}
+	(*gnl)->bin = *line2;
+	*line2 = ft_strjoin(*line2, left((*gnl)->buf1, &(*gnl)->buf2));
+	free((*gnl)->bin);
+	(*gnl)->k = 1;
+	return ((char*)1);
 }
 
-static char			*top(char *buf, t_struct **gnl)
+static char			*top(char *buf, t_struct **gnl, char **line, int k)
 {
 	int		i;
 
-	i = 0;
-	(*gnl)->bin = buf;
-	if (buf[i] == '\n')
+	if (k == 1)
 	{
-		buf = ft_strdup(buf + 1);
+		i = 0;
+		(*gnl)->bin = buf;
+		if (buf[i] == '\n')
+		{
+			buf = ft_strdup(buf + 1);
+			free((*gnl)->bin);
+			return (buf);
+		}
+		while (buf[i] != '\n')
+			i++;
+		(*gnl)->bin = buf;
+		buf = ft_strdup(buf + i + 1);
 		free((*gnl)->bin);
 		return (buf);
 	}
-	while (buf[i] != '\n')
-		i++;
-	(*gnl)->bin = buf;
-	buf = ft_strdup(buf + i + 1);
+	(*gnl)->bin = *line;
+	*line = ft_strjoin(*line, (*gnl)->buf1);
+	ft_bzero((*gnl)->buf1, ft_strlen((*gnl)->buf1));
 	free((*gnl)->bin);
-	return (buf);
+	return (0);
 }
 
 static int			bot(t_struct **gnl, char **line, int k)
@@ -72,9 +88,9 @@ static int			bot(t_struct **gnl, char **line, int k)
 		(*gnl)->bin = *line;
 		if (ft_strchr((*gnl)->buf2, '\n') != NULL)
 		{
-			*line = right((*gnl)->buf2);
+			*line = right((*gnl)->buf2, gnl, line, 1);
 			free((*gnl)->bin);
-			(*gnl)->buf2 = top((*gnl)->buf2, gnl);
+			(*gnl)->buf2 = top((*gnl)->buf2, gnl, line, 1);
 			return (1);
 		}
 		else
@@ -102,26 +118,16 @@ int					get_next_line(int const fd, char **line)
 	if (!gnl)
 		bot(&gnl, line, 3);
 	*line = (char *)ft_memalloc(1);
-	if (gnl->k && gnl->buf2)
-		if ((rd = bot(&gnl, line, 2)) == 1)
-			return (1);
-	while ((rd = read(fd, gnl->buf1, BUFF_SIZE) > 0))
+	if (gnl->k && gnl->buf2 && (rd = bot(&gnl, line, 2) == 1))
+		return (1);
+	while ((rd = read(fd, gnl->buf1, BUFF_SIZE)))
 	{
-		if (rd == -1)
+		if (rd < 0)
 			return (-1);
 		gnl->buf1[ft_strlen(gnl->buf1)] = '\0';
 		if ((gnl->buf2 = ft_strchr(gnl->buf1, '\n')) != NULL)
-		{
-			gnl->bin = *line;
-			*line = ft_strjoin(*line, left(gnl->buf1, &gnl->buf2));
-			free(gnl->bin);
-			gnl->k = 1;
-			return (1);
-		}
-		gnl->bin = *line;
-		*line = ft_strjoin(*line, gnl->buf1);
-		ft_bzero(gnl->buf1, ft_strlen(gnl->buf1));
-		free(gnl->bin);
+			return ((int)right(gnl->buf2, &gnl, line, 2));
+		top(gnl->buf1, &gnl, line, 2);
 	}
 	if (rd == 0)
 		return (0);
