@@ -6,7 +6,7 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 12:59:14 by rle-mino          #+#    #+#             */
-/*   Updated: 2016/01/07 20:17:22 by rle-mino         ###   ########.fr       */
+/*   Updated: 2016/01/08 10:50:41 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <unistd.h>
 # include "libft/includes/libft.h"
 # include <stdlib.h>
+# include <stdio.h>
 
 # define BUFF_SIZE 100
 
