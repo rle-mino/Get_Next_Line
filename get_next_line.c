@@ -57,7 +57,7 @@ int		malloker(t_struct **gnl)
 int		get_next_line(int const fd, char **line)
 {
 	static t_struct		*gnl = NULL;
-	int				rd;
+	int					rd;
 
 	if (!gnl)
 		malloker(&gnl);
@@ -68,9 +68,7 @@ int		get_next_line(int const fd, char **line)
 		{
 			*line = fill_line(*line, gnl->buf2 + 1);
 			if ((gnl->buf2 = ft_strchr(gnl->buf2 + 1, '\n')))
-			{
 				return (1);
-			}
 			if (!(rd = read(fd, gnl->buf1, BUFF_SIZE)))
 				return (0);
 		}
