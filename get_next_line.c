@@ -56,7 +56,7 @@ int		malloker(t_struct **gnl)
 
 int		get_next_line(int const fd, char **line)
 {
-	t_struct		*gnl = NULL;
+	static t_struct		*gnl = NULL;
 	int				rd;
 
 	if (!gnl)
@@ -64,13 +64,16 @@ int		get_next_line(int const fd, char **line)
 	*line = (char *)ft_memalloc(1);
 	while (gnl->buf2 || (rd = read(fd, gnl->buf1, BUFF_SIZE)))
 	{
-		/*if (gnl->buf2)
+		if (gnl->buf2)
 		{
 			*line = fill_line(*line, gnl->buf2 + 1);
 			if ((gnl->buf2 = ft_strchr(gnl->buf2 + 1, '\n')))
+			{
 				return (1);
-			rd = read(fd, gnl->buf1, BUFF_SIZE);
-		}*/
+			}
+			if (!(rd = read(fd, gnl->buf1, BUFF_SIZE)))
+				return (0);
+		}
 		if (rd < 0)
 			return (-1);
 		if ((gnl->buf2 = ft_strchr(gnl->buf1, '\n')))
