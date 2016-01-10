@@ -19,14 +19,17 @@ int		main(int argc, char **argv)
 	int		fd;
 	char	*line;
 	int		i;
+	int		k;
 
+	k = 0;
 	i = 0;
 	if (argc != 2)
 		return (0);
 	fd = open(argv[1], O_RDONLY);
-	while (get_next_line(fd, &line) > 0)
+	while ((k = get_next_line(fd, &line) > 0))
 	{
-		printf("%d\t%s\n", ++i, line);
+		printf("gnl value = %d", k);
+		printf("\t%d\t%s\n", ++i, line);
 		free(line);
 	}
 	close(fd);

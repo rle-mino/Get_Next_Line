@@ -6,14 +6,14 @@
 /*   By: rle-mino <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/20 13:06:35 by rle-mino          #+#    #+#             */
-/*   Updated: 2016/01/08 20:12:08 by rle-mino         ###   ########.fr       */
+/*   Updated: 2016/01/10 15:58:42 by rle-mino         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-char	*fill_line(char *line, char *buf)
+char			*fill_line(char *line, char *buf)
 {
 	char	*tmp;
 	int		j;
@@ -28,12 +28,9 @@ char	*fill_line(char *line, char *buf)
 		line = ft_memalloc(i + 1);
 	else
 		line = ft_memalloc(i + ft_strlen(tmp) + 1);
-	i = 0;
-	while (tmp[i])
-	{
+	i = -1;
+	while (tmp[++i])
 		line[i] = tmp[i];
-		i++;
-	}
 	while (buf[j] && buf[j] != '\n')
 	{
 		line[i] = buf[j];
@@ -44,44 +41,46 @@ char	*fill_line(char *line, char *buf)
 	return (line);
 }
 
-int		malloker(t_struct **gnl)
+static int		malloker(t_struct **gnl, char **line)
 {
-	if (!(*gnl = (t_struct *)ft_memalloc(sizeof(t_struct) + 1)))
-		return (0);
-	if (!((*gnl)->buf1 = ft_memalloc(BUFF_SIZE + 1)))
-		return (0);
-	(*gnl)->buf2 = NULL;
-	return (1);
+	*line = ft_memalloc(1);
+	if (!*gnl)
+	{
+		if (!(*gnl = (t_struct *)ft_memalloc(sizeof(t_struct) + 1)))
+			return (0);
+		if (!((*gnl)->b1 = ft_memalloc(BUFF_SIZE + 1)))
+			return (0);
+		(*gnl)->b2 = NULL;
+		(*gnl)->k = 0;
+		return (1);
+	}
+	return (0);
 }
 
-int		get_next_line(int const fd, char **line)
+int				get_next_line(int const fd, char **line)
 {
 	static t_struct		*gnl = NULL;
 	int					rd;
 
-	if (!gnl)
-		malloker(&gnl);
-	*line = (char *)ft_memalloc(1);
-	while (gnl->buf2 || (rd = read(fd, gnl->buf1, BUFF_SIZE)))
+	if (fd < 0 || line == NULL)
+		return (-1);
+	malloker(&gnl, line);
+	while (gnl->b2 || (rd = read(fd, gnl->b1, BUFF_SIZE)))
 	{
-		if (gnl->buf2)
+		if (gnl->b2)
 		{
-			*line = fill_line(*line, gnl->buf2 + 1);
-			if ((gnl->buf2 = ft_strchr(gnl->buf2 + 1, '\n')))
+			*line = fill_line(*line, gnl->b2 + 1);
+			if ((gnl->b2 = ft_strchr(gnl->b2 + 1, '\n')) != NULL)
 				return (1);
-			if (!(rd = read(fd, gnl->buf1, BUFF_SIZE)))
+			if (!(rd = read(fd, gnl->b1, BUFF_SIZE)))
 				return (0);
 		}
 		if (rd < 0)
 			return (-1);
-		if ((gnl->buf2 = ft_strchr(gnl->buf1, '\n')))
-		{
-			*line = fill_line(*line, gnl->buf1);
+		gnl->b1[rd] = '\0';
+		*line = fill_line(*line, gnl->b1);
+		if ((gnl->b2 = ft_strchr(gnl->b1, '\n')))
 			return (1);
-		}
-		*line = fill_line(*line, gnl->buf1);
 	}
-	if (rd == 0 && ft_strlen(*line) > 0)
-		return (1);
 	return (0);
 }

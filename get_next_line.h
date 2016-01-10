@@ -18,16 +18,14 @@
 # include <stdlib.h>
 # include <stdio.h>
 
-# define BUFF_SIZE 30
-# define DEBUG ft_putstr(__FILE__); ft_putstr(" - "); ft_putstr(__func__); ft_putstr(" - "); ft_putnbr(__LINE__); ft_putchar('\n');
+# define BUFF_SIZE 32
 
 int					get_next_line(int const fd, char **line);
 
 typedef struct		s_struct
 {
-	char			*buf1;
-	char			*buf2;
-	char			*bin;
+	char			*b1;
+	char			*b2;
 	int				k;
 }					t_struct;
 
