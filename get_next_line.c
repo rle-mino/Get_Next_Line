@@ -107,5 +107,5 @@ int				get_next_line(int const fd, char **line)
 		if ((gnl->b2 = ft_strchr(gnl->b1, '\n')))
 			return (1);
 	}
-	return (0);
+	return ((rd || **line) ? 1 : 0);
 }
