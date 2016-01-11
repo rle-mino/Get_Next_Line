@@ -41,7 +41,28 @@ char			*fill_line(char *line, char *buf)
 	return (line);
 }
 
-static int		malloker(t_struct **gnl, char **line)
+void			multi_fd(t_struct **gnl, int fd)
+{
+	t_struct	*tmp;
+
+	while ((*gnl)->prev != NULL && (*gnl)->fd != fd)
+		*gnl = (*gnl)->prev;
+	while ((*gnl)->next != NULL && (*gnl)->fd != fd)
+		*gnl = (*gnl)->next;
+	if ((*gnl)->fd != fd)
+	{
+		tmp = *gnl;
+		(*gnl)->next = ft_memalloc(sizeof(t_struct) + 1);
+		*gnl = (*gnl)->next;
+		(*gnl)->b1 = ft_memalloc(BUFF_SIZE + 1);
+		(*gnl)->b2 = NULL;
+		(*gnl)->next = NULL;
+		(*gnl)->prev = tmp;
+		(*gnl)->fd = fd;
+	}
+}
+
+static int		malloker(t_struct **gnl, char **line, int fd)
 {
 	*line = ft_memalloc(1);
 	if (!*gnl)
@@ -51,9 +72,13 @@ static int		malloker(t_struct **gnl, char **line)
 		if (!((*gnl)->b1 = ft_memalloc(BUFF_SIZE + 1)))
 			return (0);
 		(*gnl)->b2 = NULL;
-		(*gnl)->k = 0;
+		(*gnl)->fd = fd;
+		(*gnl)->next = NULL;
+		(*gnl)->prev = NULL;
 		return (1);
 	}
+	if ((*gnl)->fd != fd)
+		multi_fd(gnl, fd);
 	return (0);
 }
 
@@ -64,7 +89,7 @@ int				get_next_line(int const fd, char **line)
 
 	if (fd < 0 || line == NULL)
 		return (-1);
-	malloker(&gnl, line);
+	malloker(&gnl, line, fd);
 	while (gnl->b2 || (rd = read(fd, gnl->b1, BUFF_SIZE)))
 	{
 		if (gnl->b2)
